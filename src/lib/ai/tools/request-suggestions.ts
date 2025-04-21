@@ -63,8 +63,8 @@ export const requestSuggestions = ({ userId, dataStream }: RequestSuggestionsPro
           suggestions: suggestions.map(suggestion => ({
             ...suggestion,
             userId,
-            createdAt: new Date(),
-            documentCreatedAt: document.createdAt,
+            createdAt: new Date().toISOString(),
+            documentCreatedAt: document.createdAt?.toISOString(),
           })),
         });
       }
