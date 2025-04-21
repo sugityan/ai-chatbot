@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user?.id) {
+  if (!user) {
     return Response.json("Unauthorized!", { status: 401 });
   }
 

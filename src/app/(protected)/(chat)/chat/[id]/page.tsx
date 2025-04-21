@@ -25,11 +25,10 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   }
 
   if (chat.visibility === "private") {
-    if (user) {
+    if (!user) {
       return notFound();
     }
-
-    if (user!.id !== chat.userId) {
+    if (user!.id !== chat.user_id) {
       return notFound();
     }
   }

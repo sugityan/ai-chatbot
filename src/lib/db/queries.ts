@@ -30,7 +30,6 @@ export async function saveChat({
   userId: ChatType["user_id"];
   title: ChatType["title"];
 }) {
-  console.log("Saving chat in database", { id, userId, title });
   try {
     const { error } = await supabase.from("Chat").insert({
       id,
