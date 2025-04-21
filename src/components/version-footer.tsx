@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { isAfter } from 'date-fns';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { useSWRConfig } from 'swr';
-import { useWindowSize } from 'usehooks-ts';
+import { isAfter } from "date-fns";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { useSWRConfig } from "swr";
+import { useWindowSize } from "usehooks-ts";
 
-import type { Document } from '@/lib/db/schema';
-import { getDocumentTimestampByIndex } from '@/lib/utils';
+import type { Document } from "@/lib/db/schema";
+import { getDocumentTimestampByIndex } from "@/lib/utils";
 
-import { LoaderIcon } from './icons';
-import { Button } from './ui/button';
-import { useArtifact } from '@/hooks/use-artifact';
+import { LoaderIcon } from "./icons";
+import { Button } from "./ui/button";
+import { useArtifact } from "@/hooks/use-artifact";
 
 interface VersionFooterProps {
-  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
   documents: Array<Document> | undefined;
   currentVersionIndex: number;
 }
@@ -40,12 +40,12 @@ export const VersionFooter = ({
       initial={{ y: isMobile ? 200 : 77 }}
       animate={{ y: 0 }}
       exit={{ y: isMobile ? 200 : 77 }}
-      transition={{ type: 'spring', stiffness: 140, damping: 20 }}
+      transition={{ type: "spring", stiffness: 140, damping: 20 }}
     >
       <div>
-        <div>You are viewing a previous version</div>
+        <div>以前のバージョンを表示しています</div>
         <div className="text-muted-foreground text-sm">
-          Restore this version to make edits
+          編集するにはこのバージョンを復元してください
         </div>
       </div>
 
@@ -58,13 +58,15 @@ export const VersionFooter = ({
             mutate(
               `/api/document?id=${artifact.documentId}`,
               await fetch(
-                `/api/document?id=${artifact.documentId}&timestamp=${getDocumentTimestampByIndex(
+                `/api/document?id=${
+                  artifact.documentId
+                }&timestamp=${getDocumentTimestampByIndex(
                   documents,
-                  currentVersionIndex,
+                  currentVersionIndex
                 )}`,
                 {
-                  method: 'DELETE',
-                },
+                  method: "DELETE",
+                }
               ),
               {
                 optimisticData: documents
@@ -75,18 +77,18 @@ export const VersionFooter = ({
                           new Date(
                             getDocumentTimestampByIndex(
                               documents,
-                              currentVersionIndex,
-                            ),
-                          ),
-                        ),
+                              currentVersionIndex
+                            )
+                          )
+                        )
                       ),
                     ]
                   : [],
-              },
+              }
             );
           }}
         >
-          <div>Restore this version</div>
+          <div>このバージョンを復元</div>
           {isMutating && (
             <div className="animate-spin">
               <LoaderIcon />
@@ -96,10 +98,10 @@ export const VersionFooter = ({
         <Button
           variant="outline"
           onClick={() => {
-            handleVersionChange('latest');
+            handleVersionChange("latest");
           }}
         >
-          Back to latest version
+          最新バージョンに戻る
         </Button>
       </div>
     </motion.div>

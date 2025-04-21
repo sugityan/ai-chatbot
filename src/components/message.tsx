@@ -118,7 +118,7 @@ const PurePreviewMessage = ({
                                 <PencilEditIcon />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Edit message</TooltipContent>
+                            <TooltipContent>メッセージを編集</TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       )}
@@ -274,7 +274,7 @@ export const ThinkingMessage = () => {
 
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-col gap-4 text-muted-foreground">
-            Hmm...
+            考えています...
           </div>
         </div>
       </div>

@@ -1,20 +1,20 @@
-import type { Message } from 'ai';
-import { useSWRConfig } from 'swr';
-import { useCopyToClipboard } from 'usehooks-ts';
+import type { Message } from "ai";
+import { useSWRConfig } from "swr";
+import { useCopyToClipboard } from "usehooks-ts";
 
-import type { Vote } from '@/lib/db/schema';
+import type { Vote } from "@/lib/db/schema";
 
-import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
-import { Button } from './ui/button';
+import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from "./icons";
+import { Button } from "./ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './ui/tooltip';
-import { memo } from 'react';
-import equal from 'fast-deep-equal';
-import { toast } from 'sonner';
+} from "./ui/tooltip";
+import { memo } from "react";
+import equal from "fast-deep-equal";
+import { toast } from "sonner";
 
 export function PureMessageActions({
   chatId,
@@ -31,7 +31,7 @@ export function PureMessageActions({
   const [_, copyToClipboard] = useCopyToClipboard();
 
   if (isLoading) return null;
-  if (message.role === 'user') return null;
+  if (message.role === "user") return null;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -43,24 +43,24 @@ export function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 const textFromParts = message.parts
-                  ?.filter((part) => part.type === 'text')
+                  ?.filter((part) => part.type === "text")
                   .map((part) => part.text)
-                  .join('\n')
+                  .join("\n")
                   .trim();
 
                 if (!textFromParts) {
-                  toast.error("There's no text to copy!");
+                  toast.error("コピーするテキストがありません！");
                   return;
                 }
 
                 await copyToClipboard(textFromParts);
-                toast.success('Copied to clipboard!');
+                toast.success("クリップボードにコピーしました！");
               }}
             >
               <CopyIcon />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Copy</TooltipContent>
+          <TooltipContent>コピー</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -71,17 +71,17 @@ export function PureMessageActions({
               disabled={vote?.isUpvoted}
               variant="outline"
               onClick={async () => {
-                const upvote = fetch('/api/vote', {
-                  method: 'PATCH',
+                const upvote = fetch("/api/vote", {
+                  method: "PATCH",
                   body: JSON.stringify({
                     chatId,
                     messageId: message.id,
-                    type: 'up',
+                    type: "up",
                   }),
                 });
 
                 toast.promise(upvote, {
-                  loading: 'Upvoting Response...',
+                  loading: "評価を送信中...",
                   success: () => {
                     mutate<Array<Vote>>(
                       `/api/vote?chatId=${chatId}`,
@@ -89,7 +89,7 @@ export function PureMessageActions({
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id,
+                          (vote) => vote.messageId !== message.id
                         );
 
                         return [
@@ -101,19 +101,19 @@ export function PureMessageActions({
                           },
                         ];
                       },
-                      { revalidate: false },
+                      { revalidate: false }
                     );
 
-                    return 'Upvoted Response!';
+                    return "高評価を送信しました！";
                   },
-                  error: 'Failed to upvote response.',
+                  error: "評価の送信に失敗しました。",
                 });
               }}
             >
               <ThumbUpIcon />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Upvote Response</TooltipContent>
+          <TooltipContent>回答を高評価する</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -124,17 +124,17 @@ export function PureMessageActions({
               variant="outline"
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
-                const downvote = fetch('/api/vote', {
-                  method: 'PATCH',
+                const downvote = fetch("/api/vote", {
+                  method: "PATCH",
                   body: JSON.stringify({
                     chatId,
                     messageId: message.id,
-                    type: 'down',
+                    type: "down",
                   }),
                 });
 
                 toast.promise(downvote, {
-                  loading: 'Downvoting Response...',
+                  loading: "評価を送信中...",
                   success: () => {
                     mutate<Array<Vote>>(
                       `/api/vote?chatId=${chatId}`,
@@ -142,7 +142,7 @@ export function PureMessageActions({
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id,
+                          (vote) => vote.messageId !== message.id
                         );
 
                         return [
@@ -154,19 +154,19 @@ export function PureMessageActions({
                           },
                         ];
                       },
-                      { revalidate: false },
+                      { revalidate: false }
                     );
 
-                    return 'Downvoted Response!';
+                    return "低評価を送信しました。";
                   },
-                  error: 'Failed to downvote response.',
+                  error: "評価の送信に失敗しました。",
                 });
               }}
             >
               <ThumbDownIcon />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Downvote Response</TooltipContent>
+          <TooltipContent>回答を低評価する</TooltipContent>
         </Tooltip>
       </div>
     </TooltipProvider>
@@ -180,5 +180,5 @@ export const MessageActions = memo(
     if (prevProps.isLoading !== nextProps.isLoading) return false;
 
     return true;
-  },
+  }
 );

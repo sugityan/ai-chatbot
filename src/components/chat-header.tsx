@@ -59,10 +59,10 @@ function PureChatHeader({
               }}
             >
               <PlusIcon />
-              <span className="md:sr-only">New Chat</span>
+              <span className="md:sr-only">新規チャット</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
+          <TooltipContent>新規チャット</TooltipContent>
         </Tooltip>
       )}
 
@@ -84,7 +84,7 @@ function PureChatHeader({
         className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900 hidden md:flex py-1.5 px-2 h-fit md:h-[34px] order-4 md:ml-auto"
         asChild
       >
-        {!user && <Link href={"/login"}>Login</Link>}
+        {!user && <Link href={"/login"}>ログイン</Link>}
       </Button>
     </header>
   );
