@@ -27,8 +27,7 @@ function PureArtifactMessages({
   reload,
   isReadonly,
 }: ArtifactMessagesProps) {
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
+  const [messagesContainerRef, messagesEndRef] = useScrollToBottom<HTMLDivElement>();
 
   return (
     <div
@@ -41,33 +40,20 @@ function PureArtifactMessages({
           key={message.id}
           message={message}
           isLoading={status === 'streaming' && index === messages.length - 1}
-          vote={
-            votes
-              ? votes.find((vote) => vote.messageId === message.id)
-              : undefined
-          }
+          vote={votes ? votes.find(vote => vote.messageId === message.id) : undefined}
           setMessages={setMessages}
           reload={reload}
           isReadonly={isReadonly}
         />
       ))}
 
-      <div
-        ref={messagesEndRef}
-        className="shrink-0 min-w-[24px] min-h-[24px]"
-      />
+      <div ref={messagesEndRef} className="shrink-0 min-w-[24px] min-h-[24px]" />
     </div>
   );
 }
 
-function areEqual(
-  prevProps: ArtifactMessagesProps,
-  nextProps: ArtifactMessagesProps,
-) {
-  if (
-    prevProps.artifactStatus === 'streaming' &&
-    nextProps.artifactStatus === 'streaming'
-  )
+function areEqual(prevProps: ArtifactMessagesProps, nextProps: ArtifactMessagesProps) {
+  if (prevProps.artifactStatus === 'streaming' && nextProps.artifactStatus === 'streaming')
     return true;
 
   if (prevProps.status !== nextProps.status) return false;

@@ -1,12 +1,12 @@
-"use server";
+'use server';
 
-import { encodedRedirect } from "@/utils/utils";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { encodedRedirect } from '@/utils/utils';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -15,8 +15,8 @@ export const signInAction = async (formData: FormData) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/login", error.message);
+    return encodedRedirect('error', '/login', error.message);
   }
 
-  return redirect("/");
+  return redirect('/');
 };

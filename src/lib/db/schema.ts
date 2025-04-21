@@ -73,11 +73,11 @@ export const voteDeprecated = pgTable(
       .references(() => messageDeprecated.id),
     isUpvoted: boolean('isUpvoted').notNull(),
   },
-  (table) => {
+  table => {
     return {
       pk: primaryKey({ columns: [table.chatId, table.messageId] }),
     };
-  },
+  }
 );
 
 export type VoteDeprecated = InferSelectModel<typeof voteDeprecated>;
@@ -93,11 +93,11 @@ export const vote = pgTable(
       .references(() => message.id),
     isUpvoted: boolean('isUpvoted').notNull(),
   },
-  (table) => {
+  table => {
     return {
       pk: primaryKey({ columns: [table.chatId, table.messageId] }),
     };
-  },
+  }
 );
 
 export type Vote = InferSelectModel<typeof vote>;
@@ -116,11 +116,11 @@ export const document = pgTable(
       .notNull()
       .references(() => user.id),
   },
-  (table) => {
+  table => {
     return {
       pk: primaryKey({ columns: [table.id, table.createdAt] }),
     };
-  },
+  }
 );
 
 export type Document = InferSelectModel<typeof document>;
@@ -140,13 +140,13 @@ export const suggestion = pgTable(
       .references(() => user.id),
     createdAt: timestamp('createdAt').notNull(),
   },
-  (table) => ({
+  table => ({
     pk: primaryKey({ columns: [table.id] }),
     documentRef: foreignKey({
       columns: [table.documentId, table.documentCreatedAt],
       foreignColumns: [document.id, document.createdAt],
     }),
-  }),
+  })
 );
 
 export type Suggestion = InferSelectModel<typeof suggestion>;

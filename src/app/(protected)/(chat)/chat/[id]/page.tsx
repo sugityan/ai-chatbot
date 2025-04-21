@@ -1,13 +1,13 @@
-import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { cookies } from 'next/headers';
+import { notFound } from 'next/navigation';
 
-import { Chat } from "@/components/chat";
-import { getChatById, getMessagesByChatId } from "@/lib/db/queries";
-import { DataStreamHandler } from "@/components/data-stream-handler";
-import { DEFAULT_CHAT_MODEL } from "@/lib/ai/models";
-import { DBMessage } from "@/lib/db/schema";
-import { Attachment, UIMessage } from "ai";
-import { createClient } from "@/utils/supabase/server";
+import { Chat } from '@/components/chat';
+import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
+import { DataStreamHandler } from '@/components/data-stream-handler';
+import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
+import { DBMessage } from '@/lib/db/schema';
+import { Attachment, UIMessage } from 'ai';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -24,7 +24,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound();
   }
 
-  if (chat.visibility === "private") {
+  if (chat.visibility === 'private') {
     if (!user) {
       return notFound();
     }
@@ -38,20 +38,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   });
 
   function convertToUIMessages(messages: Array<DBMessage>): Array<UIMessage> {
-    return messages.map((message) => ({
+    return messages.map(message => ({
       id: message.id,
-      parts: message.parts as UIMessage["parts"],
-      role: message.role as UIMessage["role"],
+      parts: message.parts as UIMessage['parts'],
+      role: message.role as UIMessage['role'],
       // Note: content will soon be deprecated in @ai-sdk/react
-      content: "",
+      content: '',
       createdAt: message.createdAt,
-      experimental_attachments:
-        (message.attachments as Array<Attachment>) ?? [],
+      experimental_attachments: (message.attachments as Array<Attachment>) ?? [],
     }));
   }
 
   const cookieStore = await cookies();
-  const chatModelFromCookie = cookieStore.get("chat-model");
+  const chatModelFromCookie = cookieStore.get('chat-model');
 
   if (!chatModelFromCookie) {
     return (

@@ -8,7 +8,7 @@ export const imageArtifact = new Artifact({
   description: 'Useful for image generation',
   onStreamPart: ({ streamPart, setArtifact }) => {
     if (streamPart.type === 'image-delta') {
-      setArtifact((draftArtifact) => ({
+      setArtifact(draftArtifact => ({
         ...draftArtifact,
         content: streamPart.content as string,
         isVisible: true,
@@ -59,11 +59,9 @@ export const imageArtifact = new Artifact({
           canvas.height = img.height;
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0);
-          canvas.toBlob((blob) => {
+          canvas.toBlob(blob => {
             if (blob) {
-              navigator.clipboard.write([
-                new ClipboardItem({ 'image/png': blob }),
-              ]);
+              navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
             }
           }, 'image/png');
         };

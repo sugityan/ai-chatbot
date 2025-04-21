@@ -1,28 +1,24 @@
-import "@/app/globals.css";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import Script from "next/script";
-import { redirect } from "next/navigation";
+import '@/app/globals.css';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import Script from 'next/script';
+import { redirect } from 'next/navigation';
 export const experimental_ppr = true;
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/login");
+    return redirect('/login');
   }
 
   const cookieStore = await cookies();
-  const isCollapsed = cookieStore.get("sidebar:state")?.value !== "true";
+  const isCollapsed = cookieStore.get('sidebar:state')?.value !== 'true';
 
   return (
     <>

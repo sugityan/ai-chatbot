@@ -1,20 +1,15 @@
-import type { Message } from "ai";
-import { useSWRConfig } from "swr";
-import { useCopyToClipboard } from "usehooks-ts";
+import type { Message } from 'ai';
+import { useSWRConfig } from 'swr';
+import { useCopyToClipboard } from 'usehooks-ts';
 
-import type { Vote } from "@/lib/db/schema";
+import type { Vote } from '@/lib/db/schema';
 
-import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from "./icons";
-import { Button } from "./ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
-import { memo } from "react";
-import equal from "fast-deep-equal";
-import { toast } from "sonner";
+import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
+import { Button } from './ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { memo } from 'react';
+import equal from 'fast-deep-equal';
+import { toast } from 'sonner';
 
 export function PureMessageActions({
   chatId,
@@ -31,7 +26,7 @@ export function PureMessageActions({
   const [_, copyToClipboard] = useCopyToClipboard();
 
   if (isLoading) return null;
-  if (message.role === "user") return null;
+  if (message.role === 'user') return null;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -43,18 +38,18 @@ export function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 const textFromParts = message.parts
-                  ?.filter((part) => part.type === "text")
-                  .map((part) => part.text)
-                  .join("\n")
+                  ?.filter(part => part.type === 'text')
+                  .map(part => part.text)
+                  .join('\n')
                   .trim();
 
                 if (!textFromParts) {
-                  toast.error("コピーするテキストがありません！");
+                  toast.error('コピーするテキストがありません！');
                   return;
                 }
 
                 await copyToClipboard(textFromParts);
-                toast.success("クリップボードにコピーしました！");
+                toast.success('クリップボードにコピーしました！');
               }}
             >
               <CopyIcon />
@@ -71,25 +66,25 @@ export function PureMessageActions({
               disabled={vote?.isUpvoted}
               variant="outline"
               onClick={async () => {
-                const upvote = fetch("/api/vote", {
-                  method: "PATCH",
+                const upvote = fetch('/api/vote', {
+                  method: 'PATCH',
                   body: JSON.stringify({
                     chatId,
                     messageId: message.id,
-                    type: "up",
+                    type: 'up',
                   }),
                 });
 
                 toast.promise(upvote, {
-                  loading: "評価を送信中...",
+                  loading: '評価を送信中...',
                   success: () => {
                     mutate<Array<Vote>>(
                       `/api/vote?chatId=${chatId}`,
-                      (currentVotes) => {
+                      currentVotes => {
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id
+                          vote => vote.messageId !== message.id
                         );
 
                         return [
@@ -104,9 +99,9 @@ export function PureMessageActions({
                       { revalidate: false }
                     );
 
-                    return "高評価を送信しました！";
+                    return '高評価を送信しました！';
                   },
-                  error: "評価の送信に失敗しました。",
+                  error: '評価の送信に失敗しました。',
                 });
               }}
             >
@@ -124,25 +119,25 @@ export function PureMessageActions({
               variant="outline"
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
-                const downvote = fetch("/api/vote", {
-                  method: "PATCH",
+                const downvote = fetch('/api/vote', {
+                  method: 'PATCH',
                   body: JSON.stringify({
                     chatId,
                     messageId: message.id,
-                    type: "down",
+                    type: 'down',
                   }),
                 });
 
                 toast.promise(downvote, {
-                  loading: "評価を送信中...",
+                  loading: '評価を送信中...',
                   success: () => {
                     mutate<Array<Vote>>(
                       `/api/vote?chatId=${chatId}`,
-                      (currentVotes) => {
+                      currentVotes => {
                         if (!currentVotes) return [];
 
                         const votesWithoutCurrent = currentVotes.filter(
-                          (vote) => vote.messageId !== message.id
+                          vote => vote.messageId !== message.id
                         );
 
                         return [
@@ -157,9 +152,9 @@ export function PureMessageActions({
                       { revalidate: false }
                     );
 
-                    return "低評価を送信しました。";
+                    return '低評価を送信しました。';
                   },
-                  error: "評価の送信に失敗しました。",
+                  error: '評価の送信に失敗しました。',
                 });
               }}
             >
@@ -173,12 +168,9 @@ export function PureMessageActions({
   );
 }
 
-export const MessageActions = memo(
-  PureMessageActions,
-  (prevProps, nextProps) => {
-    if (!equal(prevProps.vote, nextProps.vote)) return false;
-    if (prevProps.isLoading !== nextProps.isLoading) return false;
+export const MessageActions = memo(PureMessageActions, (prevProps, nextProps) => {
+  if (!equal(prevProps.vote, nextProps.vote)) return false;
+  if (prevProps.isLoading !== nextProps.isLoading) return false;
 
-    return true;
-  }
-);
+  return true;
+});

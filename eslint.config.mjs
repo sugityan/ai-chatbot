@@ -1,21 +1,29 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import eslint from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tseslintParser from '@typescript-eslint/parser';
+import prettierConfig from 'eslint-config-prettier';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
+  eslint.configs.recommended,
   {
+    files: ['**/*.ts', '**/*.tsx'],
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
+    languageOptions: {
+      parser: tseslintParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
     rules: {
-      "react/no-unescaped-entities": "off",
+      // TypeScriptの推奨ルール
+      ...tseslint.configs['recommended'].rules,
+      // 追加のカスタムルール
+      'no-unused-vars': 'error',
+      'no-console': 'warn',
+      'no-duplicate-imports': 'error',
     },
   },
+  prettierConfig,
 ];
-
-export default eslintConfig;

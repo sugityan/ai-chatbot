@@ -30,18 +30,15 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
   },
   onStreamPart: ({ streamPart, setMetadata, setArtifact }) => {
     if (streamPart.type === 'suggestion') {
-      setMetadata((metadata) => {
+      setMetadata(metadata => {
         return {
-          suggestions: [
-            ...metadata.suggestions,
-            streamPart.content as Suggestion,
-          ],
+          suggestions: [...metadata.suggestions, streamPart.content as Suggestion],
         };
       });
     }
 
     if (streamPart.type === 'text-delta') {
-      setArtifact((draftArtifact) => {
+      setArtifact(draftArtifact => {
         return {
           ...draftArtifact,
           content: draftArtifact.content + (streamPart.content as string),
@@ -90,9 +87,7 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
             onSaveContent={onSaveContent}
           />
 
-          {metadata &&
-          metadata.suggestions &&
-          metadata.suggestions.length > 0 ? (
+          {metadata && metadata.suggestions && metadata.suggestions.length > 0 ? (
             <div className="md:hidden h-dvh w-12 shrink-0" />
           ) : null}
         </div>
@@ -169,8 +164,7 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
       onClick: ({ appendMessage }) => {
         appendMessage({
           role: 'user',
-          content:
-            'Please add suggestions you have that could improve the writing.',
+          content: 'Please add suggestions you have that could improve the writing.',
         });
       },
     },

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { isToday, isYesterday, subMonths, subWeeks } from "date-fns";
-import { useParams, useRouter } from "next/navigation";
-import type { User } from "@supabase/supabase-js";
-import { useState } from "react";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { isToday, isYesterday, subMonths, subWeeks } from 'date-fns';
+import { useParams, useRouter } from 'next/navigation';
+import type { User } from '@supabase/supabase-js';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,18 +15,18 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   useSidebar,
-} from "@/components/ui/sidebar";
-import type { Chat } from "@/lib/db/schema";
-import { fetcher } from "@/lib/utils";
-import { ChatItem } from "./sidebar-history-item";
-import useSWRInfinite from "swr/infinite";
-import { LoaderIcon } from "./icons";
+} from '@/components/ui/sidebar';
+import type { Chat } from '@/lib/db/schema';
+import { fetcher } from '@/lib/utils';
+import { ChatItem } from './sidebar-history-item';
+import useSWRInfinite from 'swr/infinite';
+import { LoaderIcon } from './icons';
 
 type GroupedChats = {
   today: Chat[];
@@ -76,10 +76,7 @@ const groupChatsByDate = (chats: Chat[]): GroupedChats => {
   );
 };
 
-export function getChatHistoryPaginationKey(
-  pageIndex: number,
-  previousPageData: ChatHistory
-) {
+export function getChatHistoryPaginationKey(pageIndex: number, previousPageData: ChatHistory) {
   if (previousPageData && previousPageData.hasMore === false) {
     return null;
   }
@@ -112,39 +109,39 @@ export function SidebarHistory({ user }: { user: User | null }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const hasReachedEnd = paginatedChatHistories
-    ? paginatedChatHistories.some((page) => page.hasMore === false)
+    ? paginatedChatHistories.some(page => page.hasMore === false)
     : false;
 
   const hasEmptyChatHistory = paginatedChatHistories
-    ? paginatedChatHistories.every((page) => page.chats.length === 0)
+    ? paginatedChatHistories.every(page => page.chats.length === 0)
     : false;
 
   const handleDelete = async () => {
     const deletePromise = fetch(`/api/chat?id=${deleteId}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
 
     toast.promise(deletePromise, {
-      loading: "Deleting chat...",
+      loading: 'Deleting chat...',
       success: () => {
-        mutate((chatHistories) => {
+        mutate(chatHistories => {
           if (chatHistories) {
-            return chatHistories.map((chatHistory) => ({
+            return chatHistories.map(chatHistory => ({
               ...chatHistory,
-              chats: chatHistory.chats.filter((chat) => chat.id !== deleteId),
+              chats: chatHistory.chats.filter(chat => chat.id !== deleteId),
             }));
           }
         });
 
-        return "Chat deleted successfully";
+        return 'Chat deleted successfully';
       },
-      error: "Failed to delete chat",
+      error: 'Failed to delete chat',
     });
 
     setShowDeleteDialog(false);
 
     if (deleteId === id) {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -163,21 +160,16 @@ export function SidebarHistory({ user }: { user: User | null }) {
   if (isLoading) {
     return (
       <SidebarGroup>
-        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
-          Today
-        </div>
+        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">Today</div>
         <SidebarGroupContent>
           <div className="flex flex-col">
-            {[44, 32, 28, 64, 52].map((item) => (
-              <div
-                key={item}
-                className="rounded-md h-8 flex gap-2 px-2 items-center"
-              >
+            {[44, 32, 28, 64, 52].map(item => (
+              <div key={item} className="rounded-md h-8 flex gap-2 px-2 items-center">
                 <div
                   className="h-4 rounded-md flex-1 max-w-[--skeleton-width] bg-sidebar-accent-foreground/10"
                   style={
                     {
-                      "--skeleton-width": `${item}%`,
+                      '--skeleton-width': `${item}%`,
                     } as React.CSSProperties
                   }
                 />
@@ -209,7 +201,7 @@ export function SidebarHistory({ user }: { user: User | null }) {
             {paginatedChatHistories &&
               (() => {
                 const chatsFromHistory = paginatedChatHistories.flatMap(
-                  (paginatedChatHistory) => paginatedChatHistory.chats
+                  paginatedChatHistory => paginatedChatHistory.chats
                 );
 
                 const groupedChats = groupChatsByDate(chatsFromHistory);
@@ -218,15 +210,13 @@ export function SidebarHistory({ user }: { user: User | null }) {
                   <div className="flex flex-col gap-6">
                     {groupedChats.today.length > 0 && (
                       <div>
-                        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
-                          Today
-                        </div>
-                        {groupedChats.today.map((chat) => (
+                        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">Today</div>
+                        {groupedChats.today.map(chat => (
                           <ChatItem
                             key={chat.id}
                             chat={chat}
                             isActive={chat.id === id}
-                            onDelete={(chatId) => {
+                            onDelete={chatId => {
                               setDeleteId(chatId);
                               setShowDeleteDialog(true);
                             }}
@@ -241,12 +231,12 @@ export function SidebarHistory({ user }: { user: User | null }) {
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
                           Yesterday
                         </div>
-                        {groupedChats.yesterday.map((chat) => (
+                        {groupedChats.yesterday.map(chat => (
                           <ChatItem
                             key={chat.id}
                             chat={chat}
                             isActive={chat.id === id}
-                            onDelete={(chatId) => {
+                            onDelete={chatId => {
                               setDeleteId(chatId);
                               setShowDeleteDialog(true);
                             }}
@@ -261,12 +251,12 @@ export function SidebarHistory({ user }: { user: User | null }) {
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
                           Last 7 days
                         </div>
-                        {groupedChats.lastWeek.map((chat) => (
+                        {groupedChats.lastWeek.map(chat => (
                           <ChatItem
                             key={chat.id}
                             chat={chat}
                             isActive={chat.id === id}
-                            onDelete={(chatId) => {
+                            onDelete={chatId => {
                               setDeleteId(chatId);
                               setShowDeleteDialog(true);
                             }}
@@ -281,12 +271,12 @@ export function SidebarHistory({ user }: { user: User | null }) {
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
                           Last 30 days
                         </div>
-                        {groupedChats.lastMonth.map((chat) => (
+                        {groupedChats.lastMonth.map(chat => (
                           <ChatItem
                             key={chat.id}
                             chat={chat}
                             isActive={chat.id === id}
-                            onDelete={(chatId) => {
+                            onDelete={chatId => {
                               setDeleteId(chatId);
                               setShowDeleteDialog(true);
                             }}
@@ -301,12 +291,12 @@ export function SidebarHistory({ user }: { user: User | null }) {
                         <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
                           Older than last month
                         </div>
-                        {groupedChats.older.map((chat) => (
+                        {groupedChats.older.map(chat => (
                           <ChatItem
                             key={chat.id}
                             chat={chat}
                             isActive={chat.id === id}
-                            onDelete={(chatId) => {
+                            onDelete={chatId => {
                               setDeleteId(chatId);
                               setShowDeleteDialog(true);
                             }}
@@ -323,7 +313,7 @@ export function SidebarHistory({ user }: { user: User | null }) {
           <motion.div
             onViewportEnter={() => {
               if (!isValidating && !hasReachedEnd) {
-                setSize((size) => size + 1);
+                setSize(size => size + 1);
               }
             }}
           />
@@ -348,15 +338,13 @@ export function SidebarHistory({ user }: { user: User | null }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              chat and remove it from our servers.
+              This action cannot be undone. This will permanently delete your chat and remove it
+              from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>
-              Continue
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

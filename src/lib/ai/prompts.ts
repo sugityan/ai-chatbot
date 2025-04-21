@@ -34,11 +34,7 @@ Do not update document right after creating it. Wait for user feedback or reques
 export const regularPrompt =
   'You are a friendly assistant! Keep your responses concise and helpful.';
 
-export const systemPrompt = ({
-  selectedChatModel,
-}: {
-  selectedChatModel: string;
-}) => {
+export const systemPrompt = ({ selectedChatModel }: { selectedChatModel: string }) => {
   if (selectedChatModel === 'chat-model-reasoning') {
     return regularPrompt;
   } else {
@@ -78,10 +74,7 @@ export const sheetPrompt = `
 You are a spreadsheet creation assistant. Create a spreadsheet in csv format based on the given prompt. The spreadsheet should contain meaningful column headers and data.
 `;
 
-export const updateDocumentPrompt = (
-  currentContent: string | null,
-  type: ArtifactKind,
-) =>
+export const updateDocumentPrompt = (currentContent: string | null, type: ArtifactKind) =>
   type === 'text'
     ? `\
 Improve the following contents of the document based on the given prompt.

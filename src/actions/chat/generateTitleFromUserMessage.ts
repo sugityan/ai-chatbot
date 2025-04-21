@@ -1,14 +1,10 @@
-"use server";
-import { generateText, Message } from "ai";
-import { myProvider } from "@/lib/ai/providers";
+'use server';
+import { generateText, Message } from 'ai';
+import { myProvider } from '@/lib/ai/providers';
 
-export async function generateTitleFromUserMessageAction({
-  message,
-}: {
-  message: Message;
-}) {
+export async function generateTitleFromUserMessageAction({ message }: { message: Message }) {
   const { text: title } = await generateText({
-    model: myProvider.languageModel("title-model"),
+    model: myProvider.languageModel('title-model'),
     system: `\n
     - you will generate a short title based on the first message a user begins a conversation with
     - ensure it is not more than 80 characters long

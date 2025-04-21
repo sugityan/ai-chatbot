@@ -1,20 +1,9 @@
 import { Artifact } from '@/components/create-artifact';
 import { CodeEditor } from '@/components/code-editor';
-import {
-  CopyIcon,
-  LogsIcon,
-  MessageIcon,
-  PlayIcon,
-  RedoIcon,
-  UndoIcon,
-} from '@/components/icons';
+import { CopyIcon, LogsIcon, MessageIcon, PlayIcon, RedoIcon, UndoIcon } from '@/components/icons';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
-import {
-  Console,
-  ConsoleOutput,
-  ConsoleOutputContent,
-} from '@/components/console';
+import { Console, ConsoleOutput, ConsoleOutputContent } from '@/components/console';
 
 const OUTPUT_HANDLERS = {
   matplotlib: `
@@ -68,8 +57,7 @@ interface Metadata {
 
 export const codeArtifact = new Artifact<'code', Metadata>({
   kind: 'code',
-  description:
-    'Useful for code generation; Code execution is only available for python code.',
+  description: 'Useful for code generation; Code execution is only available for python code.',
   initialize: async ({ setMetadata }) => {
     setMetadata({
       outputs: [],
@@ -77,7 +65,7 @@ export const codeArtifact = new Artifact<'code', Metadata>({
   },
   onStreamPart: ({ streamPart, setArtifact }) => {
     if (streamPart.type === 'code-delta') {
-      setArtifact((draftArtifact) => ({
+      setArtifact(draftArtifact => ({
         ...draftArtifact,
         content: streamPart.content as string,
         isVisible:
@@ -120,7 +108,7 @@ export const codeArtifact = new Artifact<'code', Metadata>({
         const runId = generateUUID();
         const outputContent: Array<ConsoleOutputContent> = [];
 
-        setMetadata((metadata) => ({
+        setMetadata(metadata => ({
           ...metadata,
           outputs: [
             ...metadata.outputs,
@@ -141,9 +129,7 @@ export const codeArtifact = new Artifact<'code', Metadata>({
           currentPyodideInstance.setStdout({
             batched: (output: string) => {
               outputContent.push({
-                type: output.startsWith('data:image/png;base64')
-                  ? 'image'
-                  : 'text',
+                type: output.startsWith('data:image/png;base64') ? 'image' : 'text',
                 value: output,
               });
             },
@@ -151,10 +137,10 @@ export const codeArtifact = new Artifact<'code', Metadata>({
 
           await currentPyodideInstance.loadPackagesFromImports(content, {
             messageCallback: (message: string) => {
-              setMetadata((metadata) => ({
+              setMetadata(metadata => ({
                 ...metadata,
                 outputs: [
-                  ...metadata.outputs.filter((output) => output.id !== runId),
+                  ...metadata.outputs.filter(output => output.id !== runId),
                   {
                     id: runId,
                     contents: [{ type: 'text', value: message }],
@@ -169,23 +155,21 @@ export const codeArtifact = new Artifact<'code', Metadata>({
           for (const handler of requiredHandlers) {
             if (OUTPUT_HANDLERS[handler as keyof typeof OUTPUT_HANDLERS]) {
               await currentPyodideInstance.runPythonAsync(
-                OUTPUT_HANDLERS[handler as keyof typeof OUTPUT_HANDLERS],
+                OUTPUT_HANDLERS[handler as keyof typeof OUTPUT_HANDLERS]
               );
 
               if (handler === 'matplotlib') {
-                await currentPyodideInstance.runPythonAsync(
-                  'setup_matplotlib_output()',
-                );
+                await currentPyodideInstance.runPythonAsync('setup_matplotlib_output()');
               }
             }
           }
 
           await currentPyodideInstance.runPythonAsync(content);
 
-          setMetadata((metadata) => ({
+          setMetadata(metadata => ({
             ...metadata,
             outputs: [
-              ...metadata.outputs.filter((output) => output.id !== runId),
+              ...metadata.outputs.filter(output => output.id !== runId),
               {
                 id: runId,
                 contents: outputContent,
@@ -194,10 +178,10 @@ export const codeArtifact = new Artifact<'code', Metadata>({
             ],
           }));
         } catch (error: any) {
-          setMetadata((metadata) => ({
+          setMetadata(metadata => ({
             ...metadata,
             outputs: [
-              ...metadata.outputs.filter((output) => output.id !== runId),
+              ...metadata.outputs.filter(output => output.id !== runId),
               {
                 id: runId,
                 contents: [{ type: 'text', value: error.message }],

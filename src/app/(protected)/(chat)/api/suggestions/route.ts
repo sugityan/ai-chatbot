@@ -1,11 +1,11 @@
-import { getSuggestionsByDocumentId } from "@/lib/db/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getSuggestionsByDocumentId } from '@/lib/db/queries';
+import { createClient } from '@/utils/supabase/server';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const documentId = searchParams.get("documentId");
+  const documentId = searchParams.get('documentId');
 
   if (!documentId) {
-    return new Response("Not Found", { status: 404 });
+    return new Response('Not Found', { status: 404 });
   }
 
   const supabase = await createClient();
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   const suggestions = await getSuggestionsByDocumentId({
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
   }
 
   if (suggestion.userId !== user.id) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   return Response.json(suggestions, { status: 200 });

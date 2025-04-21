@@ -1,8 +1,8 @@
-"use client";
-import { ChevronUp } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
-import { signOutAction } from "@/actions/auth/signOut";
-import { useTheme } from "next-themes";
+'use client';
+import { ChevronUp } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
+import { signOutAction } from '@/actions/auth/signOut';
+import { useTheme } from 'next-themes';
 
 import {
   DropdownMenu,
@@ -10,12 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme();
@@ -30,23 +26,16 @@ export function SidebarUserNav({ user }: { user: User }) {
               <ChevronUp className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="top"
-            className="w-[--radix-popper-anchor-width]"
-          >
+          <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
             <DropdownMenuItem
               className="cursor-pointer"
-              onSelect={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onSelect={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             >
-              {`Toggle ${theme === "light" ? "dark" : "light"} mode`}
+              {`Toggle ${theme === 'light' ? 'dark' : 'light'} mode`}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <button
-                type="button"
-                className="w-full cursor-pointer"
-                onClick={signOutAction}
-              >
+              <button type="button" className="w-full cursor-pointer" onClick={signOutAction}>
                 Sign out
               </button>
             </DropdownMenuItem>

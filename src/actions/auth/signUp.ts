@@ -1,21 +1,17 @@
-"use server";
+'use server';
 
-import { createClient } from "@/utils/supabase/server";
-import { encodedRedirect } from "@/utils/utils";
-import { getURL } from "@/utils/supabase/url";
+import { createClient } from '@/utils/supabase/server';
+import { encodedRedirect } from '@/utils/utils';
+import { getURL } from '@/utils/supabase/url';
 
 export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
-  const role = formData.get("role")?.toString();
+  const email = formData.get('email')?.toString();
+  const password = formData.get('password')?.toString();
+  const role = formData.get('role')?.toString();
   const supabase = await createClient();
 
   if (!email || !password) {
-    return encodedRedirect(
-      "error",
-      "/sign-up",
-      "Email and password are required"
-    );
+    return encodedRedirect('error', '/sign-up', 'Email and password are required');
   }
 
   // Email上のURL先を設定
@@ -34,13 +30,13 @@ export const signUpAction = async (formData: FormData) => {
   });
 
   if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
+    console.error(error.code + ' ' + error.message);
+    return encodedRedirect('error', '/sign-up', error.message);
   }
 
   return encodedRedirect(
-    "success",
-    "/sign-up",
-    "Thanks for signing up! Please check your email for a verification link."
+    'success',
+    '/sign-up',
+    'Thanks for signing up! Please check your email for a verification link.'
   );
 };

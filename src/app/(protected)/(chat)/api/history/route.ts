@@ -1,19 +1,18 @@
-import { NextRequest } from "next/server";
-import { getChatsByUserId } from "@/lib/db/queries";
-import { createClient } from "@/utils/supabase/server";
+import { NextRequest } from 'next/server';
+import { getChatsByUserId } from '@/lib/db/queries';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
-  const limit = parseInt(searchParams.get("limit") || "10");
-  const startingAfter = searchParams.get("starting_after");
-  const endingBefore = searchParams.get("ending_before");
+  const limit = parseInt(searchParams.get('limit') || '10');
+  const startingAfter = searchParams.get('starting_after');
+  const endingBefore = searchParams.get('ending_before');
 
   if (startingAfter && endingBefore) {
-    return Response.json(
-      "Only one of starting_after or ending_before can be provided!",
-      { status: 400 }
-    );
+    return Response.json('Only one of starting_after or ending_before can be provided!', {
+      status: 400,
+    });
   }
 
   const supabase = await createClient();
@@ -22,7 +21,7 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return Response.json("Unauthorized!", { status: 401 });
+    return Response.json('Unauthorized!', { status: 401 });
   }
 
   try {
@@ -35,6 +34,6 @@ export async function GET(request: NextRequest) {
 
     return Response.json(chats);
   } catch (_) {
-    return Response.json("Failed to fetch chats!", { status: 500 });
+    return Response.json('Failed to fetch chats!', { status: 500 });
   }
 }

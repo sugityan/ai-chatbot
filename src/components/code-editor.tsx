@@ -46,11 +46,9 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
 
   useEffect(() => {
     if (editorRef.current) {
-      const updateListener = EditorView.updateListener.of((update) => {
+      const updateListener = EditorView.updateListener.of(update => {
         if (update.docChanged) {
-          const transaction = update.transactions.find(
-            (tr) => !tr.annotation(Transaction.remote),
-          );
+          const transaction = update.transactions.find(tr => !tr.annotation(Transaction.remote));
 
           if (transaction) {
             const newContent = update.state.doc.toString();
@@ -90,21 +88,14 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
     }
   }, [content, status]);
 
-  return (
-    <div
-      className="relative not-prose w-full pb-[calc(80dvh)] text-sm"
-      ref={containerRef}
-    />
-  );
+  return <div className="relative not-prose w-full pb-[calc(80dvh)] text-sm" ref={containerRef} />;
 }
 
 function areEqual(prevProps: EditorProps, nextProps: EditorProps) {
   if (prevProps.suggestions !== nextProps.suggestions) return false;
-  if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex)
-    return false;
+  if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex) return false;
   if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) return false;
-  if (prevProps.status === 'streaming' && nextProps.status === 'streaming')
-    return false;
+  if (prevProps.status === 'streaming' && nextProps.status === 'streaming') return false;
   if (prevProps.content !== nextProps.content) return false;
 
   return true;

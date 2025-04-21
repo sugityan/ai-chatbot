@@ -1,11 +1,5 @@
 import { Artifact } from '@/components/create-artifact';
-import {
-  CopyIcon,
-  LineChartIcon,
-  RedoIcon,
-  SparklesIcon,
-  UndoIcon,
-} from '@/components/icons';
+import { CopyIcon, LineChartIcon, RedoIcon, SparklesIcon, UndoIcon } from '@/components/icons';
 import { SpreadsheetEditor } from '@/components/sheet-editor';
 import { parse, unparse } from 'papaparse';
 import { toast } from 'sonner';
@@ -18,7 +12,7 @@ export const sheetArtifact = new Artifact<'sheet', Metadata>({
   initialize: async () => {},
   onStreamPart: ({ setArtifact, streamPart }) => {
     if (streamPart.type === 'sheet-delta') {
-      setArtifact((draftArtifact) => ({
+      setArtifact(draftArtifact => ({
         ...draftArtifact,
         content: streamPart.content as string,
         isVisible: true,
@@ -26,13 +20,7 @@ export const sheetArtifact = new Artifact<'sheet', Metadata>({
       }));
     }
   },
-  content: ({
-    content,
-    currentVersionIndex,
-    isCurrentVersion,
-    onSaveContent,
-    status,
-  }) => {
+  content: ({ content, currentVersionIndex, isCurrentVersion, onSaveContent, status }) => {
     return (
       <SpreadsheetEditor
         content={content}
@@ -78,9 +66,7 @@ export const sheetArtifact = new Artifact<'sheet', Metadata>({
       onClick: ({ content }) => {
         const parsed = parse<string[]>(content, { skipEmptyLines: true });
 
-        const nonEmptyRows = parsed.data.filter((row) =>
-          row.some((cell) => cell.trim() !== ''),
-        );
+        const nonEmptyRows = parsed.data.filter(row => row.some(cell => cell.trim() !== ''));
 
         const cleanedCsv = unparse(nonEmptyRows);
 

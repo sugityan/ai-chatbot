@@ -1,22 +1,18 @@
-"use server";
+'use server';
 
-import { encodedRedirect } from "@/utils/utils";
-import { createClient } from "@/utils/supabase/server";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { encodedRedirect } from '@/utils/utils';
+import { createClient } from '@/utils/supabase/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const forgotPasswordAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
+  const email = formData.get('email')?.toString();
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
-  const callbackUrl = formData.get("callbackUrl")?.toString();
+  const origin = (await headers()).get('origin');
+  const callbackUrl = formData.get('callbackUrl')?.toString();
 
   if (!email) {
-    return encodedRedirect(
-      "error",
-      "/forgot-password",
-      "メールアドレスを入力してください"
-    );
+    return encodedRedirect('error', '/forgot-password', 'メールアドレスを入力してください');
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -26,9 +22,9 @@ export const forgotPasswordAction = async (formData: FormData) => {
   if (error) {
     console.error(error.message);
     return encodedRedirect(
-      "error",
-      "/forgot-password",
-      "パスワードリセットメールの送信に失敗しました"
+      'error',
+      '/forgot-password',
+      'パスワードリセットメールの送信に失敗しました'
     );
   }
 
@@ -37,8 +33,8 @@ export const forgotPasswordAction = async (formData: FormData) => {
   }
 
   return encodedRedirect(
-    "success",
-    "/forgot-password",
-    "パスワードリセット用のリンクをメールで送信しました。メールをご確認ください。"
+    'success',
+    '/forgot-password',
+    'パスワードリセット用のリンクをメールで送信しました。メールをご確認ください。'
   );
 };

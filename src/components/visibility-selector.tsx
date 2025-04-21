@@ -1,24 +1,19 @@
-"use client";
+'use client';
 
-import { ReactNode, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ReactNode, useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
-import {
-  CheckCircleFillIcon,
-  ChevronDownIcon,
-  GlobeIcon,
-  LockIcon,
-} from "./icons";
-import { useChatVisibility } from "@/hooks/use-chat-visibility";
+import { CheckCircleFillIcon, ChevronDownIcon, GlobeIcon, LockIcon } from './icons';
+import { useChatVisibility } from '@/hooks/use-chat-visibility';
 
-export type VisibilityType = "private" | "public";
+export type VisibilityType = 'private' | 'public';
 
 const visibilities: Array<{
   id: VisibilityType;
@@ -27,15 +22,15 @@ const visibilities: Array<{
   icon: ReactNode;
 }> = [
   {
-    id: "private",
-    label: "プライベート",
-    description: "このチャットはあなただけがアクセスできます",
+    id: 'private',
+    label: 'プライベート',
+    description: 'このチャットはあなただけがアクセスできます',
     icon: <LockIcon />,
   },
   {
-    id: "public",
-    label: "公開",
-    description: "リンクを持っている人なら誰でもアクセスできます",
+    id: 'public',
+    label: '公開',
+    description: 'リンクを持っている人なら誰でもアクセスできます',
     icon: <GlobeIcon />,
   },
 ];
@@ -56,7 +51,7 @@ export function VisibilitySelector({
   });
 
   const selectedVisibility = useMemo(
-    () => visibilities.find((visibility) => visibility.id === visibilityType),
+    () => visibilities.find(visibility => visibility.id === visibilityType),
     [visibilityType]
   );
 
@@ -65,14 +60,11 @@ export function VisibilitySelector({
       <DropdownMenuTrigger
         asChild
         className={cn(
-          "w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+          'w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
           className
         )}
       >
-        <Button
-          variant="outline"
-          className="hidden md:flex md:px-2 md:h-[34px]"
-        >
+        <Button variant="outline" className="hidden md:flex md:px-2 md:h-[34px]">
           {selectedVisibility?.icon}
           {selectedVisibility?.label}
           <ChevronDownIcon />
@@ -80,7 +72,7 @@ export function VisibilitySelector({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="start" className="min-w-[300px]">
-        {visibilities.map((visibility) => (
+        {visibilities.map(visibility => (
           <DropdownMenuItem
             key={visibility.id}
             onSelect={() => {
@@ -93,9 +85,7 @@ export function VisibilitySelector({
             <div className="flex flex-col gap-1 items-start">
               {visibility.label}
               {visibility.description && (
-                <div className="text-xs text-muted-foreground">
-                  {visibility.description}
-                </div>
+                <div className="text-xs text-muted-foreground">{visibility.description}</div>
               )}
             </div>
             <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
