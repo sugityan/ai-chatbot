@@ -1,7 +1,5 @@
 "use client";
-
 import { startTransition, useMemo, useOptimistic, useState } from "react";
-
 import { saveChatModelAsCookie } from "@/app/(protected)/(chat)/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +56,6 @@ export function ModelSelector({
               key={id}
               onSelect={() => {
                 setOpen(false);
-
                 startTransition(() => {
                   setOptimisticModelId(id);
                   saveChatModelAsCookie(id);

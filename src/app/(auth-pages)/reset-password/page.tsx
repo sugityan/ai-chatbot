@@ -2,7 +2,7 @@ import { resetPasswordAction } from "@/actions/auth/resetPassword";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/auth-label";
+import { Label } from "@/components/ui/label";
 
 export default async function ResetPasswordPage(props: {
   searchParams: Promise<Message>;

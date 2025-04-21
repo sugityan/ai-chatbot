@@ -2,7 +2,7 @@ import { signUpAction } from "@/actions/auth/signUp";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/auth-label";
+import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 export default async function Signup(props: {
@@ -23,7 +23,7 @@ export default async function Signup(props: {
         <h1 className="text-2xl font-medium">新規登録</h1>
         <p className="text-sm text text-foreground">
           すでにアカウントをお持ちの方は{" "}
-          <Link className="text-primary font-medium underline" href="/sign-in">
+          <Link className="text-primary font-medium underline" href="/login">
             ログイン
           </Link>
         </p>

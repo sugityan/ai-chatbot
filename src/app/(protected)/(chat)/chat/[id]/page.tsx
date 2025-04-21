@@ -61,7 +61,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           initialMessages={convertToUIMessages(messagesFromDb)}
           selectedChatModel={DEFAULT_CHAT_MODEL}
           selectedVisibilityType={chat.visibility}
-          isReadonly={user?.id !== chat.userId}
+          isReadonly={user?.id !== chat.user_id}
         />
         <DataStreamHandler id={id} />
       </>
@@ -75,7 +75,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         initialMessages={convertToUIMessages(messagesFromDb)}
         selectedChatModel={chatModelFromCookie.value}
         selectedVisibilityType={chat.visibility}
-        isReadonly={user?.id !== chat.userId}
+        isReadonly={user?.id !== chat.user_id}
       />
       <DataStreamHandler id={id} />
     </>

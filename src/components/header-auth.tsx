@@ -35,12 +35,12 @@ export default function HeaderAuth({ user }: HeaderProps) {
             asChild
             size="sm"
             className={`relative border-none text-black ${
-              pathname === "/sign-in"
+              pathname === "/login"
                 ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-orange-500"
                 : ""
             }`}
           >
-            <Link href="/sign-in">ログイン</Link>
+            <Link href="/login">ログイン</Link>
           </Button>
           <Button
             asChild

@@ -2,7 +2,7 @@ import { forgotPasswordAction } from "@/actions/auth/forgotPassword";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/auth-label";
+import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 export default async function ForgotPasswordPage(props: {
@@ -16,7 +16,7 @@ export default async function ForgotPasswordPage(props: {
           <h1 className="text-2xl font-medium">パスワードリセット</h1>
           <p className="text-sm text-secondary-foreground">
             すでにアカウントをお持ちの方は{" "}
-            <Link className="text-primary underline" href="/sign-in">
+            <Link className="text-primary underline" href="/login">
               ログイン
             </Link>
           </p>
