@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Script from "next/script";
-
+import { redirect } from "next/navigation";
 export const experimental_ppr = true;
 
 export default async function Layout({
@@ -16,6 +16,10 @@ export default async function Layout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
 
   const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar:state")?.value !== "true";
