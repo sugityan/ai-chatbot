@@ -125,6 +125,7 @@ function PureMultimodalInput({
     setLocalStorageInput,
     width,
     chatId,
+    input,
   ]);
 
   return (
@@ -154,6 +155,11 @@ function PureMultimodalInput({
             !event.nativeEvent.isComposing
           ) {
             event.preventDefault();
+
+            if (!input.trim()) {
+              toast.error("メッセージを入力してください");
+              return;
+            }
 
             if (status !== "ready") {
               toast.error("応答の完了をお待ちください！");
@@ -254,6 +260,10 @@ function PureSendButton({
       className="rounded-full p-1.5 h-fit border dark:border-zinc-600"
       onClick={(event) => {
         event.preventDefault();
+        if (!input.trim()) {
+          toast.error("メッセージを入力してください");
+          return;
+        }
         submitForm();
       }}
       disabled={input.length === 0 || uploadQueue.length > 0}
