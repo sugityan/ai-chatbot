@@ -138,7 +138,7 @@ function PureMultimodalInput({
       <Textarea
         data-testid="multimodal-input"
         ref={textareaRef}
-        placeholder="Send a message..."
+        placeholder="メッセージを入力..."
         value={input}
         onChange={handleInput}
         className={cx(
@@ -156,7 +156,7 @@ function PureMultimodalInput({
             event.preventDefault();
 
             if (status !== "ready") {
-              toast.error("Please wait for the model to finish its response!");
+              toast.error("応答の完了をお待ちください！");
             } else {
               submitForm();
             }
@@ -257,6 +257,7 @@ function PureSendButton({
         submitForm();
       }}
       disabled={input.length === 0 || uploadQueue.length > 0}
+      aria-label="メッセージを送信"
     >
       <ArrowUpIcon size={14} />
     </Button>

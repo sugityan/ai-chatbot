@@ -7,12 +7,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  title: "AI チャットボット",
+  description: "AI SDK を使用した Next.js チャットボットテンプレート",
 };
 
 export const viewport = {
-  maximumScale: 1, // Disable auto-zoom on mobile Safari
+  maximumScale: 1, // モバイルSafariでの自動ズームを無効化
 };
 
 const geist = Geist({

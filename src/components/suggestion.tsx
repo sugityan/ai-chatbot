@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import { useWindowSize } from 'usehooks-ts';
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { useWindowSize } from "usehooks-ts";
 
-import type { UISuggestion } from '@/lib/editor/suggestions';
+import type { UISuggestion } from "@/lib/editor/suggestions";
 
-import { CrossIcon, MessageIcon } from './icons';
-import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
-import { ArtifactKind } from './artifact';
+import { CrossIcon, MessageIcon } from "./icons";
+import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
+import { ArtifactKind } from "./artifact";
 
 export const Suggestion = ({
   suggestion,
@@ -27,9 +27,9 @@ export const Suggestion = ({
     <AnimatePresence>
       {!isExpanded ? (
         <motion.div
-          className={cn('cursor-pointer text-muted-foreground p-1', {
-            'absolute -right-8': artifactKind === 'text',
-            'sticky top-0 right-4': artifactKind === 'code',
+          className={cn("cursor-pointer text-muted-foreground p-1", {
+            "absolute -right-8": artifactKind === "text",
+            "sticky top-0 right-4": artifactKind === "code",
           })}
           onClick={() => {
             setIsExpanded(true);
@@ -42,7 +42,7 @@ export const Suggestion = ({
         <motion.div
           key={suggestion.id}
           className="absolute bg-background p-3 flex flex-col gap-3 rounded-2xl border text-sm w-56 shadow-xl z-50 -right-12 md:-right-16 font-sans"
-          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: -20 }}
           exit={{ opacity: 0, y: -10 }}
@@ -51,7 +51,7 @@ export const Suggestion = ({
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-2">
               <div className="size-4 bg-muted-foreground/25 rounded-full" />
-              <div className="font-medium">Assistant</div>
+              <div className="font-medium">アシスタント</div>
             </div>
             <button
               type="button"
@@ -69,7 +69,7 @@ export const Suggestion = ({
             className="w-fit py-1.5 px-3 rounded-full"
             onClick={onApply}
           >
-            Apply
+            適用する
           </Button>
         </motion.div>
       )}

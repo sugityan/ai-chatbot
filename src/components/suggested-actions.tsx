@@ -1,36 +1,39 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Button } from './ui/button';
-import { memo } from 'react';
-import { UseChatHelpers } from '@ai-sdk/react';
+import { motion } from "framer-motion";
+import { Button } from "./ui/button";
+import { memo } from "react";
+import { UseChatHelpers } from "@ai-sdk/react";
 
 interface SuggestedActionsProps {
   chatId: string;
-  append: UseChatHelpers['append'];
+  append: UseChatHelpers["append"];
 }
 
 function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      title: "コードの説明",
+      label: "コードの具体的な説明をお願いします",
+      action:
+        "このコードについて詳しく説明してください。特に重要な部分や実装の意図を教えてください。",
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: "コードレビュー",
+      label: "改善点を見つけてください",
+      action:
+        "このコードをレビューして、改善点や最適化できる箇所を指摘してください。セキュリティ、パフォーマンス、可読性の観点から助言をお願いします。",
     },
     {
-      title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      title: "テストケース",
+      label: "テストケースを提案してください",
+      action:
+        "このコードのためのテストケースを提案してください。主要な機能、エッジケース、エラーケースを考慮したテストシナリオを教えてください。",
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
+      title: "What is the weather",
+      label: "in San Francisco?",
+      action: "What is the weather in San Francisco?",
     },
   ];
 
@@ -46,15 +49,15 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
           exit={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.05 * index }}
           key={`suggested-action-${suggestedAction.title}-${index}`}
-          className={index > 1 ? 'hidden sm:block' : 'block'}
+          className={index > 1 ? "hidden sm:block" : "block"}
         >
           <Button
             variant="ghost"
             onClick={async () => {
-              window.history.replaceState({}, '', `/chat/${chatId}`);
+              window.history.replaceState({}, "", `/chat/${chatId}`);
 
               append({
-                role: 'user',
+                role: "user",
                 content: suggestedAction.action,
               });
             }}

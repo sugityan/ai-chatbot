@@ -10,11 +10,11 @@ export const chatModels: Array<ChatModel> = [
   {
     id: "chat-model",
     name: "Chat model",
-    description: "Primary model for all-purpose chat",
+    description: "最も高性能な GPT-4 モデル",
   },
   {
     id: "chat-model-reasoning",
     name: "Reasoning model",
-    description: "Uses advanced reasoning",
+    description: "最もパワフルな o1 モデル",
   },
 ];
