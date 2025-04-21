@@ -1,74 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Chatbot
 
-# Supabase プロジェクトの環境構築手順
+最新のテクノロジーを活用したAIチャットボットアプリケーション
 
-## 🚀 1. Supabase アカウントの作成
+## 特徴
 
-まず、[Supabase](https://supabase.com/) にアクセスし、アカウントを作成してください。GitHub アカウントを使用するか、メールアドレスとパスワードを入力して新規登録できます。
+### 最新のNext.js機能
 
-## 🛠️ 2. 新規プロジェクトの作成
+- Next.js 15 App Routerを採用
+- React Server Components (RSCs)とServer Actionsによる高パフォーマンスな実装
+- TypeScriptによる型安全な開発環境
 
-ログイン後、ダッシュボードからプロジェクトに参加します
+### AIとの対話機能
 
-## 📂 3. 環境変数の設定
+- OpenAI SDKを活用した自然な対話機能
+- マルチモーダル入力対応（テキスト、画像、コード等）
+- コードの編集や実行機能
+- PDFやスプレッドシートなど多様なドキュメント形式のサポート
 
-プロジェクトフォルダ内に `.env.local` というファイルを作成し、以下の内容を追加してください。
+### モダンなUI/UX
 
-```ini
-NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+- Tailwind CSSによるスタイリング
+- Radix UIベースのアクセシブルなコンポーネント
+- ダークモード対応
+- レスポンシブデザイン
+
+### データ永続化と認証
+
+- Supabaseによるデータベース管理
+- 堅牢な認証システム
+  - ログイン/サインアップ
+  - パスワードリセット
+  - セッション管理
+
+## 技術スタック
+
+- **フロントエンド**
+
+  - React 19
+  - Next.js 15
+  - Tailwind CSS
+  - Framer Motion
+  - CodeMirror（コードエディタ）
+
+- **バックエンド**
+
+  - Supabase
+  - OpenAI SDK
+  - drizzle-orm（データベースORM）
+
+- **開発ツール**
+  - TypeScript
+  - ESLint
+  - Prettier
+
+## ローカル環境での実行方法
+
+1. 依存パッケージのインストール
+
+```bash
+npm install
 ```
 
-⚠ **注意**：
+2. 環境変数の設定
 
-- `YOUR_SUPABASE_URL` と `YOUR_SUPABASE_ANON_KEY` は、Supabaseのダッシュボードにある **「プロジェクト設定」→「API」** から取得できます。
+- `.env.example`を`.env`にコピーし、必要な環境変数を設定
+  - Supabase認証情報
+  - OpenAI API キー
 
-## 🎥 4. 参考動画
-
-Supabase と Next.js を使った環境構築について、以下の動画が参考になります。
-
-[![SupabaseとNext.jsでアプリを構築する方法](https://img.youtube.com/vi/wXXTz2eZIoM/0.jpg)](https://www.youtube.com/watch?v=wXXTz2eZIoM)
-
----
-
-これで環境構築は完了です！ 🎉
-問題が発生した場合は [Supabase 公式ドキュメント](https://supabase.com/docs/) を参考にしてください。
-
-## Getting Started
-
-First, run the development server:
+3. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+アプリケーションは http://localhost:3000 で起動します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## スクリプト
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# ai-chatbot
-
-# ai-chatbot
+- `npm run dev` - 開発サーバーの起動（Turbopack使用）
+- `npm run build` - プロダクションビルド
+- `npm run start` - プロダクションサーバーの起動
+- `npm run lint` - ESLintによるコード検証
+- `npm run format` - Prettierによるコードフォーマット
