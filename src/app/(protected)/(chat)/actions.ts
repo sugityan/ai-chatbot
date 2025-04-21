@@ -26,8 +26,6 @@ export async function generateTitleFromUserMessage({ message }: { message: Messa
     prompt: JSON.stringify(message),
   });
 
-  console.log('Generated title:', title);
-
   return title;
 }
 
