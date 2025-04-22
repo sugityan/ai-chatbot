@@ -2,17 +2,7 @@ import "server-only";
 import { createClient } from "@/utils/supabase/client";
 import type { Database } from "@/types/supabase";
 import type { ArtifactKind } from "@/components/artifact";
-import {
-  user,
-  chat,
-  type User,
-  document,
-  suggestion,
-  message,
-  vote,
-  type DBMessage,
-  type Chat,
-} from "./schema";
+import { type DBMessage } from "./schema";
 const supabase = createClient();
 
 // Types from the schema
@@ -140,7 +130,7 @@ export async function getChatsByUserId({
 
 export async function getChatById({ id }: { id: string }) {
   try {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("Chat")
       .select("*")
       .eq("id", id)

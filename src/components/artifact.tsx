@@ -21,19 +21,14 @@ import { ArtifactCloseButton } from "./artifact-close-button";
 import { ArtifactMessages } from "./artifact-messages";
 import { useSidebar } from "./ui/sidebar";
 import { useArtifact } from "@/hooks/use-artifact";
-import { imageArtifact } from "@/artifacts/image/client";
+
 import { codeArtifact } from "@/artifacts/code/client";
-import { sheetArtifact } from "@/artifacts/sheet/client";
+
 import { textArtifact } from "@/artifacts/text/client";
 import equal from "fast-deep-equal";
 import { UseChatHelpers } from "@ai-sdk/react";
 
-export const artifactDefinitions = [
-  textArtifact,
-  codeArtifact,
-  imageArtifact,
-  sheetArtifact,
-];
+export const artifactDefinitions = [textArtifact, codeArtifact];
 export type ArtifactKind = (typeof artifactDefinitions)[number]["kind"];
 
 export interface UIArtifact {
@@ -240,17 +235,6 @@ function PureArtifact({
     throw new Error("Artifact definition not found!");
   }
 
-  useEffect(() => {
-    if (artifact.documentId !== "init") {
-      if (artifactDefinition.initialize) {
-        artifactDefinition.initialize({
-          documentId: artifact.documentId,
-          setMetadata,
-        });
-      }
-    }
-  }, [artifact.documentId, artifactDefinition, setMetadata]);
-
   return (
     <AnimatePresence>
       {artifact.isVisible && (
@@ -441,8 +425,6 @@ function PureArtifact({
                 handleVersionChange={handleVersionChange}
                 isCurrentVersion={isCurrentVersion}
                 mode={mode}
-                metadata={metadata}
-                setMetadata={setMetadata}
               />
             </div>
 

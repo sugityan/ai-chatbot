@@ -1,6 +1,5 @@
 "use client";
 
-import type { Message } from "ai";
 import cx from "classnames";
 import {
   AnimatePresence,
@@ -131,7 +130,7 @@ const Tool = ({
   );
 };
 
-const randomArr = [...Array(6)].map((x) => nanoid(5));
+const randomArr = [...Array(6)].map(() => nanoid(5));
 
 const ReadingLevelSelector = ({
   setSelectedTool,
