@@ -5,7 +5,6 @@ import { Dispatch, memo, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TextArtifactMetadata } from "@/artifacts/text/client";
-import { Metadata as CodeMetadata } from "@/artifacts/code/client";
 
 interface ArtifactActionsProps {
   artifact: UIArtifact;
@@ -13,9 +12,26 @@ interface ArtifactActionsProps {
   currentVersionIndex: number;
   isCurrentVersion: boolean;
   mode: "edit" | "diff";
-  metadata: TextArtifactMetadata | CodeMetadata;
-  setMetadata: Dispatch<SetStateAction<TextArtifactMetadata | CodeMetadata>>;
+  metadata: TextArtifactMetadata;
+  setMetadata: Dispatch<SetStateAction<TextArtifactMetadata>>;
 }
+
+// Base action context type
+type BaseActionContext = {
+  content: string;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
+  currentVersionIndex: number;
+  isCurrentVersion: boolean;
+  mode: "edit" | "diff";
+};
+
+// Text action context type
+type TextActionContext = BaseActionContext & {
+  metadata: TextArtifactMetadata;
+  setMetadata: Dispatch<SetStateAction<TextArtifactMetadata>>;
+};
+
+// Remove CodeActionContext and ActionContext type as they're no longer needed
 
 function PureArtifactActions({
   artifact,
@@ -28,38 +44,25 @@ function PureArtifactActions({
 }: ArtifactActionsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
+  // Get the text artifact definition directly since we only handle text
   const artifactDefinition = artifactDefinitions.find(
-    (definition) => definition.kind === artifact.kind
+    (definition) => definition.kind === "text"
   );
 
   if (!artifactDefinition) {
     throw new Error("Artifact definition not found!");
   }
 
-  // Create a type-safe action context based on the artifact kind
-  const actionContext = (() => {
-    if (artifact.kind === "text") {
-      return {
-        content: artifact.content,
-        handleVersionChange,
-        currentVersionIndex,
-        isCurrentVersion,
-        mode,
-        metadata: metadata as TextArtifactMetadata,
-        setMetadata: setMetadata as Dispatch<SetStateAction<TextArtifactMetadata>>,
-      };
-    } else {
-      return {
-        content: artifact.content,
-        handleVersionChange,
-        currentVersionIndex,
-        isCurrentVersion,
-        mode,
-        metadata: metadata as CodeMetadata,
-        setMetadata: setMetadata as Dispatch<SetStateAction<CodeMetadata>>,
-      };
-    }
-  })();
+  // Create a type-safe action context
+  const actionContext: TextActionContext = {
+    content: artifact.content,
+    handleVersionChange,
+    currentVersionIndex,
+    isCurrentVersion,
+    mode,
+    metadata: metadata as TextArtifactMetadata,
+    setMetadata: setMetadata as Dispatch<SetStateAction<TextArtifactMetadata>>,
+  };
 
   return (
     <div className="flex flex-row gap-1">
@@ -75,11 +78,10 @@ function PureArtifactActions({
               onClick={async () => {
                 setIsLoading(true);
                 try {
-                  if (artifact.kind === "text") {
-                    await Promise.resolve((action as any).onClick(actionContext));
-                  } else {
-                    await Promise.resolve((action as any).onClick(actionContext));
-                  }
+                  const typedAction = action as {
+                    onClick: (context: TextActionContext) => Promise<void>;
+                  };
+                  await typedAction.onClick(actionContext);
                 } catch {
                   toast.error("Failed to execute action");
                 } finally {
@@ -90,7 +92,7 @@ function PureArtifactActions({
                 isLoading || artifact.status === "streaming"
                   ? true
                   : action.isDisabled
-                  ? (action as any).isDisabled(actionContext)
+                  ? action.isDisabled(actionContext)
                   : false
               }
             >
