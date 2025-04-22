@@ -14,7 +14,7 @@ import { Suggestion } from "@/lib/db/schema";
 import { toast } from "sonner";
 import { getSuggestions } from "../actions";
 
-interface TextArtifactMetadata {
+export interface TextArtifactMetadata {
   suggestions: Array<Suggestion>;
 }
 

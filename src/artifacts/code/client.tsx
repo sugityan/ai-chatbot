@@ -62,7 +62,7 @@ function detectRequiredHandlers(code: string): string[] {
   return handlers;
 }
 
-interface Metadata {
+export interface Metadata {
   outputs: Array<ConsoleOutput>;
 }
 

@@ -21,10 +21,9 @@ import { ArtifactCloseButton } from "./artifact-close-button";
 import { ArtifactMessages } from "./artifact-messages";
 import { useSidebar } from "./ui/sidebar";
 import { useArtifact } from "@/hooks/use-artifact";
-
 import { codeArtifact } from "@/artifacts/code/client";
-
-import { textArtifact } from "@/artifacts/text/client";
+import { textArtifact, type TextArtifactMetadata } from "@/artifacts/text/client";
+import { type Metadata as CodeMetadata } from "@/artifacts/code/client";
 import equal from "fast-deep-equal";
 import { UseChatHelpers } from "@ai-sdk/react";
 
@@ -425,29 +424,53 @@ function PureArtifact({
                 handleVersionChange={handleVersionChange}
                 isCurrentVersion={isCurrentVersion}
                 mode={mode}
+                metadata={metadata ?? {}}
+                setMetadata={setMetadata}
               />
             </div>
 
             <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
-              <artifactDefinition.content
-                title={artifact.title}
-                content={
-                  isCurrentVersion
-                    ? artifact.content
-                    : getDocumentContentById(currentVersionIndex)
-                }
-                mode={mode}
-                status={artifact.status}
-                currentVersionIndex={currentVersionIndex}
-                suggestions={[]}
-                onSaveContent={saveContent}
-                isInline={false}
-                isCurrentVersion={isCurrentVersion}
-                getDocumentContentById={getDocumentContentById}
-                isLoading={isDocumentsFetching && !artifact.content}
-                metadata={metadata}
-                setMetadata={setMetadata}
-              />
+              {artifact.kind === "text" ? (
+                <textArtifact.content
+                  {...{
+                    title: artifact.title,
+                    content: isCurrentVersion
+                      ? artifact.content
+                      : getDocumentContentById(currentVersionIndex),
+                    mode,
+                    status: artifact.status,
+                    currentVersionIndex,
+                    suggestions: [],
+                    onSaveContent: saveContent,
+                    isInline: false,
+                    isCurrentVersion,
+                    getDocumentContentById,
+                    isLoading: isDocumentsFetching && !artifact.content,
+                    metadata: (metadata ?? { suggestions: [] }) as TextArtifactMetadata,
+                    setMetadata: setMetadata as Dispatch<SetStateAction<TextArtifactMetadata>>
+                  }}
+                />
+              ) : (
+                <codeArtifact.content
+                  {...{
+                    title: artifact.title,
+                    content: isCurrentVersion
+                      ? artifact.content
+                      : getDocumentContentById(currentVersionIndex),
+                    mode,
+                    status: artifact.status,
+                    currentVersionIndex,
+                    suggestions: [],
+                    onSaveContent: saveContent,
+                    isInline: false,
+                    isCurrentVersion,
+                    getDocumentContentById,
+                    isLoading: isDocumentsFetching && !artifact.content,
+                    metadata: (metadata ?? { outputs: [] }) as CodeMetadata,
+                    setMetadata: setMetadata as Dispatch<SetStateAction<CodeMetadata>>
+                  }}
+                />
+              )}
 
               <AnimatePresence>
                 {isCurrentVersion && (
