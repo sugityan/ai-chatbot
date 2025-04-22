@@ -22,7 +22,10 @@ import { ArtifactMessages } from "./artifact-messages";
 import { useSidebar } from "./ui/sidebar";
 import { useArtifact } from "@/hooks/use-artifact";
 import { codeArtifact } from "@/artifacts/code/client";
-import { textArtifact, type TextArtifactMetadata } from "@/artifacts/text/client";
+import {
+  textArtifact,
+  type TextArtifactMetadata,
+} from "@/artifacts/text/client";
 import { type Metadata as CodeMetadata } from "@/artifacts/code/client";
 import equal from "fast-deep-equal";
 import { UseChatHelpers } from "@ai-sdk/react";
@@ -418,15 +421,24 @@ function PureArtifact({
                 </div>
               </div>
 
-              <ArtifactActions
-                artifact={artifact}
-                currentVersionIndex={currentVersionIndex}
-                handleVersionChange={handleVersionChange}
-                isCurrentVersion={isCurrentVersion}
-                mode={mode}
-                metadata={metadata ?? {}}
-                setMetadata={setMetadata}
-              />
+              {artifact.kind === "text" ? (
+                <ArtifactActions
+                  artifact={artifact}
+                  currentVersionIndex={currentVersionIndex}
+                  handleVersionChange={handleVersionChange}
+                  isCurrentVersion={isCurrentVersion}
+                  mode={mode}
+                  metadata={
+                    (artifact.kind === "text" &&
+                      (metadata as TextArtifactMetadata)) || { suggestions: [] }
+                  }
+                  setMetadata={
+                    setMetadata as Dispatch<
+                      SetStateAction<TextArtifactMetadata>
+                    >
+                  }
+                />
+              ) : null}
             </div>
 
             <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
@@ -446,8 +458,16 @@ function PureArtifact({
                     isCurrentVersion,
                     getDocumentContentById,
                     isLoading: isDocumentsFetching && !artifact.content,
-                    metadata: (metadata ?? { suggestions: [] }) as TextArtifactMetadata,
-                    setMetadata: setMetadata as Dispatch<SetStateAction<TextArtifactMetadata>>
+                    metadata:
+                      metadata && artifact.kind === "text"
+                        ? (artifact.kind === "text" &&
+                            (metadata as TextArtifactMetadata)) || {
+                            suggestions: [],
+                          }
+                        : ({ suggestions: [] } as TextArtifactMetadata),
+                    setMetadata: setMetadata as Dispatch<
+                      SetStateAction<TextArtifactMetadata>
+                    >,
                   }}
                 />
               ) : (
@@ -467,7 +487,9 @@ function PureArtifact({
                     getDocumentContentById,
                     isLoading: isDocumentsFetching && !artifact.content,
                     metadata: (metadata ?? { outputs: [] }) as CodeMetadata,
-                    setMetadata: setMetadata as Dispatch<SetStateAction<CodeMetadata>>
+                    setMetadata: setMetadata as Dispatch<
+                      SetStateAction<CodeMetadata>
+                    >,
                   }}
                 />
               )}

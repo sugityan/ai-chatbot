@@ -82,23 +82,38 @@ export function useArtifact() {
   const setMetadata = useCallback<Dispatch<SetStateAction<ArtifactMetadata>>>(
     (update) => {
       setLocalArtifactMetadata((current) => {
+        // If current is null, provide a default based on artifact kind
+        const safeCurrentMetadata: ArtifactMetadata =
+          current ||
+          (artifact.kind === "text"
+            ? ({ suggestions: [] } as TextArtifactMetadata)
+            : ({ outputs: [] } as CodeMetadata));
+
         const nextState =
-          typeof update === "function"
-            ? update(current as ArtifactMetadata)
-            : update;
+          typeof update === "function" ? update(safeCurrentMetadata) : update;
         return nextState;
       });
     },
-    [setLocalArtifactMetadata]
+    [setLocalArtifactMetadata, artifact.kind]
   );
+
+  // Create a properly typed metadata value
+  const typedMetadata = useMemo(() => {
+    if (localArtifactMetadata === null) {
+      return artifact.kind === "text"
+        ? ({ suggestions: [] } as TextArtifactMetadata)
+        : ({ outputs: [] } as CodeMetadata);
+    }
+    return localArtifactMetadata;
+  }, [localArtifactMetadata, artifact.kind]);
 
   return useMemo(
     () => ({
       artifact,
       setArtifact,
-      metadata: localArtifactMetadata as ArtifactMetadata,
+      metadata: typedMetadata,
       setMetadata,
     }),
-    [artifact, setArtifact, localArtifactMetadata, setMetadata]
+    [artifact, setArtifact, typedMetadata, setMetadata]
   );
 }

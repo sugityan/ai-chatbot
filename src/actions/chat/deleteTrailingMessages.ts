@@ -10,6 +10,5 @@ export async function deleteTrailingMessagesAction({ id }: { id: string }) {
 
   await deleteMessagesByChatIdAfterTimestamp({
     chatId: message.chatId,
-    timestamp: message.createdAt,
   });
 }

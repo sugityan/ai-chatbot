@@ -5,6 +5,7 @@ import { Dispatch, memo, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TextArtifactMetadata } from "@/artifacts/text/client";
+import { ArtifactActionContext } from "./create-artifact";
 
 interface ArtifactActionsProps {
   artifact: UIArtifact;
@@ -16,22 +17,20 @@ interface ArtifactActionsProps {
   setMetadata: Dispatch<SetStateAction<TextArtifactMetadata>>;
 }
 
-// Base action context type
-type BaseActionContext = {
-  content: string;
-  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
-  currentVersionIndex: number;
-  isCurrentVersion: boolean;
-  mode: "edit" | "diff";
-};
+// Text action context type - using the generic ArtifactActionContext from create-artifact.tsx
+type TextActionContext = ArtifactActionContext<TextArtifactMetadata>;
 
-// Text action context type
-type TextActionContext = BaseActionContext & {
-  metadata: TextArtifactMetadata;
-  setMetadata: Dispatch<SetStateAction<TextArtifactMetadata>>;
-};
+// Define the type for the action's onClick function
+type TextActionOnClick = (context: TextActionContext) => Promise<void> | void;
 
-// Remove CodeActionContext and ActionContext type as they're no longer needed
+// Define a type for the artifact action with the specific TextActionContext
+interface TextArtifactAction {
+  icon: React.ReactNode;
+  label?: string;
+  description: string;
+  onClick: TextActionOnClick;
+  isDisabled?: (context: TextActionContext) => boolean;
+}
 
 function PureArtifactActions({
   artifact,
@@ -60,8 +59,8 @@ function PureArtifactActions({
     currentVersionIndex,
     isCurrentVersion,
     mode,
-    metadata: metadata as TextArtifactMetadata,
-    setMetadata: setMetadata as Dispatch<SetStateAction<TextArtifactMetadata>>,
+    metadata,
+    setMetadata,
   };
 
   return (
@@ -78,9 +77,8 @@ function PureArtifactActions({
               onClick={async () => {
                 setIsLoading(true);
                 try {
-                  const typedAction = action as {
-                    onClick: (context: TextActionContext) => Promise<void>;
-                  };
+                  // Cast the action to our specific TextArtifactAction type
+                  const typedAction = action as TextArtifactAction;
                   await typedAction.onClick(actionContext);
                 } catch {
                   toast.error("Failed to execute action");

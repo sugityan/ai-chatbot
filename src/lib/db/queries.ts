@@ -388,18 +388,14 @@ export async function getMessageById({ id }: { id: string }) {
 
 export async function deleteMessagesByChatIdAfterTimestamp({
   chatId,
-  timestamp,
 }: {
   chatId: string;
-  timestamp: Date;
 }) {
   try {
     const { data: messagesToDelete, error: selectError } = await supabase
       .from("Message_v2")
       .select("id")
-      .eq("chatId", chatId)
-      .gte("createdAt", timestamp.toISOString());
-
+      .eq("chatId", chatId);
     if (selectError) throw selectError;
 
     const messageIds = messagesToDelete?.map((message) => message.id) || [];
