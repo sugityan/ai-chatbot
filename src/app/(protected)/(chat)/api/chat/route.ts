@@ -19,11 +19,6 @@ import {
   getTrailingMessageId,
 } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
-import { createDocument } from "@/lib/ai/tools/create-document";
-import { updateDocument } from "@/lib/ai/tools/update-document";
-import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
-import { getWeather } from "@/lib/ai/tools/get-weather";
-import { isProductionEnvironment } from "@/lib/constants";
 import { myProvider } from "@/lib/ai/providers";
 
 export const maxDuration = 60;
@@ -100,15 +95,6 @@ export async function POST(request: Request) {
                 ],
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
-          tools: {
-            getWeather,
-            createDocument: createDocument({ userId: user.id, dataStream }),
-            updateDocument: updateDocument({ userId: user.id, dataStream }),
-            requestSuggestions: requestSuggestions({
-              userId: user.id,
-              dataStream,
-            }),
-          },
           onFinish: async ({ response }) => {
             if (user?.id) {
               try {
@@ -140,13 +126,13 @@ export async function POST(request: Request) {
                     },
                   ],
                 });
-              } catch (_) {
+              } catch {
                 console.error("Failed to save chat");
               }
             }
           },
           experimental_telemetry: {
-            isEnabled: isProductionEnvironment,
+            isEnabled: false,
             functionId: "stream-text",
           },
         });
@@ -161,7 +147,7 @@ export async function POST(request: Request) {
         return "Oops, an error occurred!";
       },
     });
-  } catch (error) {
+  } catch {
     return new Response("An error occurred while processing your request!", {
       status: 404,
     });
@@ -198,7 +184,7 @@ export async function DELETE(request: Request) {
     await deleteChatById({ id });
 
     return new Response("Chat deleted", { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("An error occurred while processing your request!", {
       status: 500,
     });

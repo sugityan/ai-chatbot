@@ -21,19 +21,16 @@ import { ArtifactCloseButton } from "./artifact-close-button";
 import { ArtifactMessages } from "./artifact-messages";
 import { useSidebar } from "./ui/sidebar";
 import { useArtifact } from "@/hooks/use-artifact";
-import { imageArtifact } from "@/artifacts/image/client";
 import { codeArtifact } from "@/artifacts/code/client";
-import { sheetArtifact } from "@/artifacts/sheet/client";
-import { textArtifact } from "@/artifacts/text/client";
+import {
+  textArtifact,
+  type TextArtifactMetadata,
+} from "@/artifacts/text/client";
+import { type Metadata as CodeMetadata } from "@/artifacts/code/client";
 import equal from "fast-deep-equal";
 import { UseChatHelpers } from "@ai-sdk/react";
 
-export const artifactDefinitions = [
-  textArtifact,
-  codeArtifact,
-  imageArtifact,
-  sheetArtifact,
-];
+export const artifactDefinitions = [textArtifact, codeArtifact];
 export type ArtifactKind = (typeof artifactDefinitions)[number]["kind"];
 
 export interface UIArtifact {
@@ -240,17 +237,6 @@ function PureArtifact({
     throw new Error("Artifact definition not found!");
   }
 
-  useEffect(() => {
-    if (artifact.documentId !== "init") {
-      if (artifactDefinition.initialize) {
-        artifactDefinition.initialize({
-          documentId: artifact.documentId,
-          setMetadata,
-        });
-      }
-    }
-  }, [artifact.documentId, artifactDefinition, setMetadata]);
-
   return (
     <AnimatePresence>
       {artifact.isVisible && (
@@ -435,37 +421,78 @@ function PureArtifact({
                 </div>
               </div>
 
-              <ArtifactActions
-                artifact={artifact}
-                currentVersionIndex={currentVersionIndex}
-                handleVersionChange={handleVersionChange}
-                isCurrentVersion={isCurrentVersion}
-                mode={mode}
-                metadata={metadata}
-                setMetadata={setMetadata}
-              />
+              {artifact.kind === "text" ? (
+                <ArtifactActions
+                  artifact={artifact}
+                  currentVersionIndex={currentVersionIndex}
+                  handleVersionChange={handleVersionChange}
+                  isCurrentVersion={isCurrentVersion}
+                  mode={mode}
+                  metadata={
+                    (artifact.kind === "text" &&
+                      (metadata as TextArtifactMetadata)) || { suggestions: [] }
+                  }
+                  setMetadata={
+                    setMetadata as Dispatch<
+                      SetStateAction<TextArtifactMetadata>
+                    >
+                  }
+                />
+              ) : null}
             </div>
 
             <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
-              <artifactDefinition.content
-                title={artifact.title}
-                content={
-                  isCurrentVersion
-                    ? artifact.content
-                    : getDocumentContentById(currentVersionIndex)
-                }
-                mode={mode}
-                status={artifact.status}
-                currentVersionIndex={currentVersionIndex}
-                suggestions={[]}
-                onSaveContent={saveContent}
-                isInline={false}
-                isCurrentVersion={isCurrentVersion}
-                getDocumentContentById={getDocumentContentById}
-                isLoading={isDocumentsFetching && !artifact.content}
-                metadata={metadata}
-                setMetadata={setMetadata}
-              />
+              {artifact.kind === "text" ? (
+                <textArtifact.content
+                  {...{
+                    title: artifact.title,
+                    content: isCurrentVersion
+                      ? artifact.content
+                      : getDocumentContentById(currentVersionIndex),
+                    mode,
+                    status: artifact.status,
+                    currentVersionIndex,
+                    suggestions: [],
+                    onSaveContent: saveContent,
+                    isInline: false,
+                    isCurrentVersion,
+                    getDocumentContentById,
+                    isLoading: isDocumentsFetching && !artifact.content,
+                    metadata:
+                      metadata && artifact.kind === "text"
+                        ? (artifact.kind === "text" &&
+                            (metadata as TextArtifactMetadata)) || {
+                            suggestions: [],
+                          }
+                        : ({ suggestions: [] } as TextArtifactMetadata),
+                    setMetadata: setMetadata as Dispatch<
+                      SetStateAction<TextArtifactMetadata>
+                    >,
+                  }}
+                />
+              ) : (
+                <codeArtifact.content
+                  {...{
+                    title: artifact.title,
+                    content: isCurrentVersion
+                      ? artifact.content
+                      : getDocumentContentById(currentVersionIndex),
+                    mode,
+                    status: artifact.status,
+                    currentVersionIndex,
+                    suggestions: [],
+                    onSaveContent: saveContent,
+                    isInline: false,
+                    isCurrentVersion,
+                    getDocumentContentById,
+                    isLoading: isDocumentsFetching && !artifact.content,
+                    metadata: (metadata ?? { outputs: [] }) as CodeMetadata,
+                    setMetadata: setMetadata as Dispatch<
+                      SetStateAction<CodeMetadata>
+                    >,
+                  }}
+                />
+              )}
 
               <AnimatePresence>
                 {isCurrentVersion && (

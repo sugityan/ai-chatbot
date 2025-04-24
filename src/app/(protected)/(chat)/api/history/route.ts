@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     });
 
     return Response.json(chats);
-  } catch (_) {
+  } catch {
     return Response.json("Failed to fetch chats!", { status: 500 });
   }
 }

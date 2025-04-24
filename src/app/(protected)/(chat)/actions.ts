@@ -40,7 +40,6 @@ export async function deleteTrailingMessages({ id }: { id: string }) {
 
   await deleteMessagesByChatIdAfterTimestamp({
     chatId: message.chatId,
-    timestamp: message.createdAt,
   });
 }
 

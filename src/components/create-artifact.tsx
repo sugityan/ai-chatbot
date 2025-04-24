@@ -1,20 +1,21 @@
-import { Suggestion } from '@/lib/db/schema';
-import { UseChatHelpers } from '@ai-sdk/react';
-import { ComponentType, Dispatch, ReactNode, SetStateAction } from 'react';
-import { DataStreamDelta } from './data-stream-handler';
-import { UIArtifact } from './artifact';
+import { Suggestion } from "@/lib/db/schema";
+import { UseChatHelpers } from "@ai-sdk/react";
+import { ComponentType, Dispatch, ReactNode, SetStateAction } from "react";
+import { DataStreamDelta } from "./data-stream-handler";
+import { UIArtifact } from "./artifact";
 
-export type ArtifactActionContext<M = any> = {
+// Generic type M represents the metadata type for the artifact
+export type ArtifactActionContext<M = Record<string, unknown>> = {
   content: string;
-  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
   currentVersionIndex: number;
   isCurrentVersion: boolean;
-  mode: 'edit' | 'diff';
+  mode: "edit" | "diff";
   metadata: M;
   setMetadata: Dispatch<SetStateAction<M>>;
 };
 
-type ArtifactAction<M = any> = {
+type ArtifactAction<M = Record<string, unknown>> = {
   icon: ReactNode;
   label?: string;
   description: string;
@@ -23,7 +24,7 @@ type ArtifactAction<M = any> = {
 };
 
 export type ArtifactToolbarContext = {
-  appendMessage: UseChatHelpers['append'];
+  appendMessage: UseChatHelpers["append"];
 };
 
 export type ArtifactToolbarItem = {
@@ -32,13 +33,13 @@ export type ArtifactToolbarItem = {
   onClick: (context: ArtifactToolbarContext) => void;
 };
 
-interface ArtifactContent<M = any> {
+interface ArtifactContent<M = Record<string, unknown>> {
   title: string;
   content: string;
-  mode: 'edit' | 'diff';
+  mode: "edit" | "diff";
   isCurrentVersion: boolean;
   currentVersionIndex: number;
-  status: 'streaming' | 'idle';
+  status: "streaming" | "idle";
   suggestions: Array<Suggestion>;
   onSaveContent: (updatedContent: string, debounce: boolean) => void;
   isInline: boolean;
@@ -48,12 +49,12 @@ interface ArtifactContent<M = any> {
   setMetadata: Dispatch<SetStateAction<M>>;
 }
 
-interface InitializeParameters<M = any> {
+interface InitializeParameters<M = Record<string, unknown>> {
   documentId: string;
   setMetadata: Dispatch<SetStateAction<M>>;
 }
 
-type ArtifactConfig<T extends string, M = any> = {
+type ArtifactConfig<T extends string, M = Record<string, unknown>> = {
   kind: T;
   description: string;
   content: ComponentType<ArtifactContent<M>>;
@@ -67,13 +68,13 @@ type ArtifactConfig<T extends string, M = any> = {
   }) => void;
 };
 
-export class Artifact<T extends string, M = any> {
+export class Artifact<T extends string, M = Record<string, unknown>> {
   readonly kind: T;
   readonly description: string;
   readonly content: ComponentType<ArtifactContent<M>>;
   readonly actions: Array<ArtifactAction<M>>;
   readonly toolbar: ArtifactToolbarItem[];
-  readonly initialize?: (parameters: InitializeParameters) => void;
+  readonly initialize?: (parameters: InitializeParameters<M>) => void;
   readonly onStreamPart: (args: {
     setMetadata: Dispatch<SetStateAction<M>>;
     setArtifact: Dispatch<SetStateAction<UIArtifact>>;

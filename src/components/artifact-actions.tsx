@@ -1,19 +1,35 @@
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-import { artifactDefinitions, UIArtifact } from './artifact';
-import { Dispatch, memo, SetStateAction, useState } from 'react';
-import { ArtifactActionContext } from './create-artifact';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { artifactDefinitions, UIArtifact } from "./artifact";
+import { Dispatch, memo, SetStateAction, useState } from "react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { TextArtifactMetadata } from "@/artifacts/text/client";
+import { ArtifactActionContext } from "./create-artifact";
 
 interface ArtifactActionsProps {
   artifact: UIArtifact;
-  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
   currentVersionIndex: number;
   isCurrentVersion: boolean;
-  mode: 'edit' | 'diff';
-  metadata: any;
-  setMetadata: Dispatch<SetStateAction<any>>;
+  mode: "edit" | "diff";
+  metadata: TextArtifactMetadata;
+  setMetadata: Dispatch<SetStateAction<TextArtifactMetadata>>;
+}
+
+// Text action context type - using the generic ArtifactActionContext from create-artifact.tsx
+type TextActionContext = ArtifactActionContext<TextArtifactMetadata>;
+
+// Define the type for the action's onClick function
+type TextActionOnClick = (context: TextActionContext) => Promise<void> | void;
+
+// Define a type for the artifact action with the specific TextActionContext
+interface TextArtifactAction {
+  icon: React.ReactNode;
+  label?: string;
+  description: string;
+  onClick: TextActionOnClick;
+  isDisabled?: (context: TextActionContext) => boolean;
 }
 
 function PureArtifactActions({
@@ -27,15 +43,17 @@ function PureArtifactActions({
 }: ArtifactActionsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
+  // Get the text artifact definition directly since we only handle text
   const artifactDefinition = artifactDefinitions.find(
-    (definition) => definition.kind === artifact.kind,
+    (definition) => definition.kind === "text"
   );
 
   if (!artifactDefinition) {
-    throw new Error('Artifact definition not found!');
+    throw new Error("Artifact definition not found!");
   }
 
-  const actionContext: ArtifactActionContext = {
+  // Create a type-safe action context
+  const actionContext: TextActionContext = {
     content: artifact.content,
     handleVersionChange,
     currentVersionIndex,
@@ -52,27 +70,28 @@ function PureArtifactActions({
           <TooltipTrigger asChild>
             <Button
               variant="outline"
-              className={cn('h-fit dark:hover:bg-zinc-700', {
-                'p-2': !action.label,
-                'py-1.5 px-2': action.label,
+              className={cn("h-fit dark:hover:bg-zinc-700", {
+                "p-2": !action.label,
+                "py-1.5 px-2": action.label,
               })}
               onClick={async () => {
                 setIsLoading(true);
-
                 try {
-                  await Promise.resolve(action.onClick(actionContext));
-                } catch (error) {
-                  toast.error('Failed to execute action');
+                  // Cast the action to our specific TextArtifactAction type
+                  const typedAction = action as TextArtifactAction;
+                  await typedAction.onClick(actionContext);
+                } catch {
+                  toast.error("Failed to execute action");
                 } finally {
                   setIsLoading(false);
                 }
               }}
               disabled={
-                isLoading || artifact.status === 'streaming'
+                isLoading || artifact.status === "streaming"
                   ? true
                   : action.isDisabled
-                    ? action.isDisabled(actionContext)
-                    : false
+                  ? action.isDisabled(actionContext)
+                  : false
               }
             >
               {action.icon}
@@ -94,7 +113,6 @@ export const ArtifactActions = memo(
       return false;
     if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) return false;
     if (prevProps.artifact.content !== nextProps.artifact.content) return false;
-
     return true;
-  },
+  }
 );
